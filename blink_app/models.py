@@ -45,6 +45,7 @@ class Character(models.Model):
     name = models.CharField(max_length=100)
     imdb_id = models.CharField(max_length=30, null=True)
     imdb_url = models.URLField(null=True)
+    # Connections to other tables
     actor = models.ManyToManyField(Person)
 
     def __unicode__(self):
