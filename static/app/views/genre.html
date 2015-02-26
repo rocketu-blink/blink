@@ -1,4 +1,20 @@
-<div class="container-fluid">
-  <p>This is a placeholder for the genre page.</p>
-  <a href="#/genre/1">test</a>
-</div>
+<div class="container theme-showcase" role="main">
+
+	<div class="jumbotron">
+        <h1>Most Popular by Genre</h1>
+        <p>Love romantic-comedies? Action-thrillers? Adventure? Explore genres and popular sub-genres below.</p>
+    </div>
+
+ <div class="table-responsive">
+    <table class="sortable table table-striped table-bordered" border="1" width="100%" style="margin: 0px;">
+        </div>
+
+        <div>
+            <tr ng-repeat="eachGenre in genre">
+              <td class="text-center"><a href="#/genre/{{eachGenre}}">{{eachGenre}}</a></td>
+            </tr>
+        </div>
+     </table>
+
+
+

@@ -1,5 +1,17 @@
-<div class="container-fluid">
-  <p>This is a placeholder for the year page.</p>
-  <a href="#/year/1">test</a>
+<div class="container theme-showcase" role="main">
 
-</div>
+	<div class="jumbotron">
+        <h1>Search Movies by Year</h1>
+        <p>Explore movies by year below.</p>
+    </div>
+
+ <div class="table-responsive">
+    <table class="sortable table table-striped table-bordered" border="1" width="100%" style="margin: 0px;">
+        </div>
+
+        <div>
+            <tr ng-repeat="eachyear in yearData | orderBy:eachyear:true">
+              <td class="text-center"><a href="#/year/{{eachyear}}">{{eachyear}}</a></td>
+            </tr>
+        </div>
+     </table>

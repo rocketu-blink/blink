@@ -1,7 +1,8 @@
 <div class="container-fluid">
-  <h1 class="text-center">{{yearData[0].release_year}}</h1>
+  <h1 class="text-center">{{year}}</h1>
   <div class="row">
-    <ul class="list-groupcol-sm-offset-4 col-sm-4">
+    <img width="300px" class="img-responsive" ng-if="!loaded" src="assets/img/loading.gif"/>
+    <ul class="list-group col-sm-offset-4 col-sm-4">
       <li class="list-group-item borderedList" ng-repeat="result in yearData">
         <div>
           <img ng-hide="result.poster === null || result.poster === ''" height-"50px" src={{result.poster}}/>

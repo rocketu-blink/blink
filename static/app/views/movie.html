@@ -31,18 +31,26 @@
   <hr>
   <div class="row">
     
-    <div id="director" class="col-sm-offset-2 col-sm-3">
+    <div id="director" class="col-sm-4">
       <h3 class="text-center">Director</strong></h3>
       <ul class="list-group borderedList">
         <li ng-repeat="direct in detail.director" class="text-center list-group-item">
           <a href={{direct.imdb_url}}>{{direct.name}}</a>
         </li>
     </div>
-    <div id="writer" class="col-sm-offset-2 col-sm-3">
+    <div id="writer" class="col-sm-4">
       <h3 class="text-center">Writers</h3>
       <ul  class="list-group borderedList">
         <li ng-repeat="write in detail.writer" class="text-center list-group-item">
           <a href={{write.imdb_url}}>{{write.name}}</a>
+        </li>
+      </ul>
+    </div>
+    <div id="genre" class="col-sm-4">
+      <h3 class="text-center">Genre</h3>
+      <ul class="list-group borderedList">
+        <li ng-repeat="genre in detail.genre" class="text-center list-group-item">
+          <a href="#/genre/{{genre.name}}">{{genre.name}}</a>
         </li>
       </ul>
     </div>
