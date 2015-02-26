@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import filters
 from rest_framework import viewsets
 from rest_framework import generics
@@ -14,23 +15,9 @@ class SearchViewSet(generics.ListAPIView):
     queryset = Content.objects.all()
     serializer_class = SearchSerializer
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('title', 'release_year', 'director__name','characters__name', 'characters_actor_name')
-
+    search_fields = ('title', 'director__name', 'characters__actor__name')
 
 class ContentViewSet(viewsets.ModelViewSet):
 
     serializer_class = ContentSerializer
     queryset = Content.objects.filter()
-
-
-# class ActorViewSet(viewsets.ModelViewSet):
-#
-#     read_only=True
-#     queryset = Content.objects.filter(title__startswith='B')
-#     serializer_class = SearchSerializer
-#
-# class GenreViewSet(viewsets.ModelViewSet):
-#
-#     read_only=True
-#     queryset = Content.objects.filter(title__startswith='B')
-#     serializer_class = SearchSerializer

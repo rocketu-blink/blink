@@ -6,7 +6,6 @@ from blink_app.views import ContentViewSet
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
-#router.register(r'search', views.SearchViewSet.as_view(),)
 router.register(r'content', views.ContentViewSet)
 
 # Wire up our API using automatic URL routing.

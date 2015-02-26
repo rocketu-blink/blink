@@ -21,18 +21,14 @@ for x in range(1,325):
         netflix =  movie_soup.find("a", href=True,text="Netflix page")['href']
         year1 = movie_soup.find("span", class_="infodata")
         year = year1.find("a").text
-        try:
-            movie_temp = Content.objects.get(
-                    title=name,
-                    release_year=year,
-                )
-            movie_temp.netflix_url = netflix
-            movie_temp.save()
-            print "Updated: " + name
-            count_update += 1
-        except:
-            print "Skipped: " + name
-            count_skip += 1
+        movie_temp = Content.objects.get_or_create(
+                title=name,
+                release_year=year,
+                netflix_url=netflix,
+            )
+        movie_temp.save()
+        print "Updated: " + name
+        count_update += 1
 
 print "======================================"
 print "===        Process Complete        ==="
