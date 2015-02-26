@@ -8,7 +8,7 @@
           <img ng-hide="result.poster === null || result.poster === ''" height-"50px" src={{result.poster}}/>
           <img ng-show="result.poster === null || result.poster === ''" height="60px" src="assets/img/not_available.jpg"/>  
           <a href="#/movie/{{result.id}}">{{result.title}}</a>
-                   <p class="pull-right">{{result.release_year}}</p>  
+          <p class="pull-right">{{result.release_year}}</p>  
           <div id="link-icons" class="col-sm-offset-4">
             <a href={{result.netflix_url}}>
               <img ng-hide="result.netflix_url === null || result.netflix_url === ''" src="assets/img/netflix-icon.png"/>
