@@ -1,0 +1,19 @@
+<div id="blank" class="row">
+  <p></p>
+</div>
+<div id="content" class="container-fluid">
+  <div class="row">
+    <img id="logo" width="200px" class="img-responsive" src="assets/img/logo.png"/><br>
+  </div>
+  <div class="row">
+    <div class="container-fluid col-md-offset-4 col-md-4" id="main_search">
+      <form class="simple-form">
+        <autocomplete ng-model="search" data="movies" attr-placeholder="Search All Movies" 
+        on-type="collectData" on-select="searchTitle">
+        </autocomplete>
+        <br>
+        <input id="searchButton" type="submit" ng-click="searchInput()" value="Search"/>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <h1 class="text-center">{{genreInfo.name}}</h1>
+  <div class="row">
+    <ul class="list-group col-sm-offset-4 col-sm-4">
+      <li class="list-group-item borderedList" ng-repeat="result in genreData">
+        <div>
+          <img ng-hide="result.poster === null || result.poster === ''" height-"50px" src={{result.poster}}/>
+          <img ng-show="result.poster === null || result.poster === ''" height="60px" src="assets/img/not_available.jpg"/>  
+          <a href="#/movie/{{result.id}}"><span>{{result.title}}</span></a>
+          <span class="pull-right"> </p>
+          <span class="pull-right"> </p>
+          <span class="pull-right">{{result.release_year}}</span>    
+        </div>
+      </li>
+    </ul>
+  </div>
+</div> 
