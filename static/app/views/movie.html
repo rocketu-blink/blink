@@ -1,0 +1,86 @@
+<div class="container-fluid" ng-init="gotoTop()">
+  <div class="row">
+    <img ng-hide="detail.poster === null || detail.poster === ''" class="col-sm-3" src={{detail.poster}} alt={{detail.title}}/>
+    <img ng-show="detail.poster === null || detail.poster === ''" class="col-sm-3" src="assets/img/not_available.jpg"/>
+    <h1 class="col-sm-9"><a href={{detail.imdb_url}}>{{detail.title}}</a>&nbsp&nbsp({{detail.release_year}})</h1>
+    <div id="info">
+      <p class="col-sm-3">Release Date: {{dateString}}</p>
+      <p class="col-sm-3">MPAA Rating: {{detail.mpaa_rating}}</p>
+      <p class="col-sm-3">Runtime: {{detail.runtime}} min</p>
+      <p class="col-sm-9">&nbsp</p>
+      <p class="col-sm-9">{{detail.synopsis}}</p>
+      <p class="col-sm-9">&nbsp</p>
+    </div>
+  </div>
+  <div class="row">
+    <div id="link-icons" class="col-sm-offset-6">
+      <a href={{detail.netflix_url}}>
+        <img ng-hide="detail.netflix_url === null || detail.netflix_url === ''" src="assets/img/netflix-icon.png"/>
+      </a>
+      <img ng-show="detail.netflix_url === null || detail.netflix_url === ''" src="assets/img/grey-netflix-icon.png"/>
+      <a href={{detail.hulu_url}}>
+        <img ng-hide="detail.hulu_url === null || detail.hulu_url === ''" src="assets/img/hulu-icon.png"/>
+      </a>
+      <img ng-show="detail.hulu_url === null || detail.hulu_url === ''" src="assets/img/grey-hulu-icon.png"/>
+      <a href={{detail.prime_url}}>
+        <img ng-hide="detail.prime_url === null || detail.prime_url === ''"  height="32px" width="32px" src="assets/img/amazon-icon.png"/>
+      </a>
+      <img ng-show="detail.prime_url === null || detail.prime_url === ''" height="32px" width="32px" src="assets/img/grey-amazon-icon.png"/>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    
+    <div id="director" class="col-sm-offset-2 col-sm-3">
+      <h3 class="text-center">Director</strong></h3>
+      <ul class="list-group borderedList">
+        <li ng-repeat="direct in detail.director" class="text-center list-group-item">
+          <a href={{direct.imdb_url}}>{{direct.name}}</a>
+        </li>
+    </div>
+    <div id="writer" class="col-sm-offset-2 col-sm-3">
+      <h3 class="text-center">Writers</h3>
+      <ul  class="list-group borderedList">
+        <li ng-repeat="write in detail.writer" class="text-center list-group-item">
+          <a href={{write.imdb_url}}>{{write.name}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div id="characters" class="col-sm-offset-4 col-sm-4">
+      <h3 class="text-center">Characters</h3>
+      <ul class="list-group">
+        <li ng-repeat="character in detail.characters" class="text-center list-group-item borderedList character">
+          <a id="characterName" href={{character.imdb_url}}>{{character.name}}</a>
+            <ul class="list-group">
+              <li class="list-group-item whiteBack" ng-repeat="actor in character.actor">
+                <a href={{actor.imdb_url}}>
+                  {{actor.name}}
+                </a>
+              </li>
+            </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <hr>
+    <div id="money" class="col-sm-offset-4 col-sm-4">
+      <h3 class="text-center">Budget/ Revenue</h3>
+      <ul class="list-group">
+        <li class="text-center list-group-item borderedList" ng-if="detail.budget !== null">
+          <strong>Budget: </strong><p>{{detail.budget | currency:"$":0}}</p>
+        </li>
+        <li class="text-center list-group-item borderedList" ng-if="detail.budget === null">
+          <strong>Budget: </strong><p>N/A</p>
+        </li>
+        <li class="text-center list-group-item borderedList" id="rev" ng-if="detail.revenue !== null">
+          <strong>Revenue: </strong><p>{{detail.revenue | currency:"$":0}}</p>
+        </li>
+        <li class="text-center list-group-item borderedList" id="norev" ng-if="detail.revenue === null">
+          <strong>Revenue: </strong><p>N/A</p>
+        </li>
+      </ul>
+    </div>
+</div>
