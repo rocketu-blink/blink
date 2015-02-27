@@ -1,5 +1,16 @@
-<div class="container-fluid">
-  <p>This is a placeholder for the year page.</p>
-  <a href="#/year/1">test</a>
-
+<div class="container theme-showcase" role="main">
+	<div class="jumbotron">
+    <h1>Search Movies by Year</h1>
+    <p>Explore movies by year below.</p>
+  </div>
+  <div class="table-responsive">
+    <table class="sortable table table-striped table-bordered" border="1" width="100%" style="margin: 0px;">  
+        <tr dir-paginate="eachyear in yearData | orderBy:eachyear:true | itemsPerPage: 10">
+          <td class="text-center"><a href="#/year/{{eachyear}}">{{eachyear}}</a></td>
+        </tr>
+    </table>
+  </div>
+  <div id="controls" class="text-center">
+      <dir-pagination-controls align="center" boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="app/views/dirPagination.tpl.html"></dir-pagination-controls>
+  </div>
 </div>
