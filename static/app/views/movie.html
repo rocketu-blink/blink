@@ -14,18 +14,18 @@
   </div>
   <div class="row">
     <div id="link-icons" class="col-sm-offset-6">
-      <a href={{detail.netflix_url}}>
-        <img ng-hide="detail.netflix_url === null || detail.netflix_url === ''" src="assets/img/netflix-icon.png"/>
+      <a href={{detail.netflix.netflix_url}}>
+        <img ng-if="!(detail.netflix === null)" src="assets/img/netflix-icon.png"/>
       </a>
-      <img ng-show="detail.netflix_url === null || detail.netflix_url === ''" src="assets/img/grey-netflix-icon.png"/>
-      <a href={{detail.hulu_url}}>
-        <img ng-hide="detail.hulu_url === null || detail.hulu_url === ''" src="assets/img/hulu-icon.png"/>
+      <img ng-if="detail.netflix === null" src="assets/img/grey-netflix-icon.png"/>
+      <a href={{detail.hulu.hulu_url}}>
+        <img ng-if="!(detail.hulu === null)" src="assets/img/hulu-icon.png"/>
       </a>
-      <img ng-show="detail.hulu_url === null || detail.hulu_url === ''" src="assets/img/grey-hulu-icon.png"/>
-      <a href={{detail.prime_url}}>
-        <img ng-hide="detail.prime_url === null || detail.prime_url === ''"  height="32px" width="32px" src="assets/img/amazon-icon.png"/>
+      <img ng-if="detail.hulu === null" src="assets/img/grey-hulu-icon.png"/>
+      <a href={{detail.amazon.prime_url}}>
+        <img ng-if="!(detail.amazon === null)"  height="32px" width="32px" src="assets/img/amazon-icon.png"/>
       </a>
-      <img ng-show="detail.prime_url === null || detail.prime_url === ''" height="32px" width="32px" src="assets/img/grey-amazon-icon.png"/>
+      <img ng-if="detail.amazon === null" height="32px" width="32px" src="assets/img/grey-amazon-icon.png"/>
     </div>
   </div>
   <hr>

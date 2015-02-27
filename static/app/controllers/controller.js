@@ -12,7 +12,9 @@ angular.module('blink')
           $scope.all_data = data;
           $scope.movies = [];
           for (var i = 0; i < data.length; i++) {
-            $scope.movies.push(data[i]['title']+ ' ('+data[i]['release_year'].toString()+')');
+            if (data[i]['release_year']) {
+              $scope.movies.push(data[i]['title']+ ' ('+data[i]['release_year']+')');
+            }
           }
         });
       };
