@@ -1,20 +1,17 @@
 <div class="container theme-showcase" role="main">
-
-	<div class="jumbotron">
-        <h1>Most Popular by Genre</h1>
-        <p>Love romantic-comedies? Action-thrillers? Adventure? Explore genres and popular sub-genres below.</p>
-    </div>
-
- <div class="table-responsive">
-    <table class="sortable table table-striped table-bordered" border="1" width="100%" style="margin: 0px;">
-        </div>
-
-        <div>
-            <tr ng-repeat="eachGenre in genre">
-              <td class="text-center"><a href="#/genre/{{eachGenre}}">{{eachGenre}}</a></td>
-            </tr>
-        </div>
-     </table>
-
-
+  <div class="jumbotron">
+    <h1>Most Popular by Genre</h1>
+    <p>Love romantic-comedies? Action-thrillers? Adventure? Explore genres and popular sub-genres below.</p>
+  </div>
+  <div class="table-responsive">
+    <table class="sortable table table-striped table-bordered" border="1" width="100%" style="margin: 0px;">     
+      <tr dir-paginate="eachGenre in genre | itemsPerPage: 10 | orderBy: eachGenre">
+        <td class="text-center"><a href="#/genre/{{eachGenre}}">{{eachGenre}}</a></td>
+      </tr>
+    </table>
+  </div>
+  <div id="controls" class="text-center">
+    <dir-pagination-controls align="center" boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="app/views/dirPagination.tpl.html"></dir-pagination-controls>
+  </div>
+</div>
 
