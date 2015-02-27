@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
 def page_scrape(args):
 
-    page_num = 1
+    page_num = 9600
     while page_num < 315536:
 
         url="http://www.imdb.com/search/title?sort=moviemeter,asc&start=" + str(page_num) + "&title_type=feature"
@@ -67,7 +67,10 @@ def page_scrape(args):
                             imdb_rating = 0.0
 
                         try:
-                            synopsis = page_soup.find('p',itemprop="description").text.strip()
+                            if len(page_soup.find('p',itemprop="description").text.strip()) <= 200:
+                                synopsis = page_soup.find('p',itemprop="description").text.strip()
+                            elif len(page_soup.find('p',itemprop="description").text.strip()) > 200:
+                                synopsis = page_soup.find('p',itemprop="description").text.strip()[0:199]
                         except:
                             synopsis = 'Data Missing'
                         # budget = int(re.sub("[^0-9]", "", budget_soup.find('div', id="tn15content").text.strip()[7:27]))
@@ -87,176 +90,179 @@ def page_scrape(args):
                         imdb_url = page_url
 
                         #Create Movie Data
-                        content_qs = Content.objects.get_or_create(title=title,
-                                               release_date=release_date,
-                                               release_year=release_year,
-                                               runtime=runtime,
-                                               mpaa_rating=mpaa_rating,
-                                               # budget=budget,
-                                               # revenue=revenue,
-                                               synopsis=synopsis,
-                                               imdb_rating=imdb_rating,
-                                               imdb_id=imdb_id,
-                                               imdb_url=imdb_url,
-                                               )
+                        try:
+                            content_qs = Content.objects.get_or_create(title=title,
+                                                   release_date=release_date,
+                                                   release_year=release_year,
+                                                   runtime=runtime,
+                                                   mpaa_rating=mpaa_rating,
+                                                   # budget=budget,
+                                                   # revenue=revenue,
+                                                   synopsis=synopsis,
+                                                   imdb_rating=imdb_rating,
+                                                   imdb_id=imdb_id,
+                                                   imdb_url=imdb_url,
+                                                   )
 
-                        #Create/Grab ContentType
-                        name = 'movie'
-                        content_type_qs = ContentType.objects.get_or_create(name=name)
-                        content_qs[0].content_type = content_type_qs[0]
+                            #Create/Grab ContentType
+                            name = 'movie'
+                            content_type_qs = ContentType.objects.get_or_create(name=name)
+                            content_qs[0].content_type = content_type_qs[0]
 
-                        #Grab Genre Data
-                        genres = []
-                        for genre in page_soup.find_all('span', itemprop="genre"):
-                            genre_temp = Genre.objects.get_or_create(name=genre.text)
-                            genres.append(genre_temp[0])
-                        #Connect Content to Genres
-                        content_qs[0].genre.add(*genres)
+                            #Grab Genre Data
+                            genres = []
+                            for genre in page_soup.find_all('span', itemprop="genre"):
+                                genre_temp = Genre.objects.get_or_create(name=genre.text)
+                                genres.append(genre_temp[0])
+                            #Connect Content to Genres
+                            content_qs[0].genre.add(*genres)
 
-                        #Grab Director Data
-                        directors = []
-                        for director in page_soup.find_all('div', itemprop="director"):
-                            name = director.find('a').text
-                            imdb_id = director.find('a')['href'][6:15]
-                            imdb_url = 'http://www.imdb.com' + director.find('a')['href'][:16]
+                            #Grab Director Data
+                            directors = []
+                            for director in page_soup.find_all('div', itemprop="director"):
+                                name = director.find('a').text
+                                imdb_id = director.find('a')['href'][6:15]
+                                imdb_url = 'http://www.imdb.com' + director.find('a')['href'][:16]
 
-                            director_qs = Person.objects.get_or_create(name=name,
-                                                                    imdb_id=imdb_id,
-                                                                    imdb_url=imdb_url,
-                                                                    )
+                                director_qs = Person.objects.get_or_create(name=name,
+                                                                        imdb_id=imdb_id,
+                                                                        imdb_url=imdb_url,
+                                                                        )
 
-                            directors.append(director_qs[0])
-
-                            #Create/Grab PersonType
-                            person_type = []
-                            name = 'director'
-                            person_type_qs = PersonType.objects.get_or_create(name=name)
-                            person_type.append(person_type_qs[0])
-                            director_qs[0].type.add(*person_type)
-
-                        #Connect Content to Director
-                        content_qs[0].director.add(*directors)
-
-                        #Grab Writer Data
-                        writers = []
-                        for writer in page_soup.find_all('div', itemprop="creator"):
-                            name = writer.find('a').text
-                            imdb_id = writer.find('a')['href'][6:15]
-                            imdb_url = 'http://www.imdb.com' + writer.find('a')['href'][:16]
-                            type = PersonType.objects.get_or_create(name="writer")
-
-                            writer_qs = Person.objects.get_or_create(name=name,
-                                                                    imdb_id=imdb_id,
-                                                                    imdb_url=imdb_url,
-                                                                    )
-
-                            writers.append(writer_qs[0])
-
-                            #Create/Grab PersonType
-                            person_type = []
-                            name = 'writer'
-                            person_type_qs = PersonType.objects.get_or_create(name=name)
-                            person_type.append(person_type_qs[0])
-                            writer_qs[0].type.add(*person_type)
-
-                        #Connect Content to Director
-                        content_qs[0].writer.add(*writers)
-
-                        #Grab Actor/Character Data
-                        for actor_even in page_soup.find_all('tr', 'even'):
-                            if actor_even.find('td', itemprop="actor") != None:
-                                #Create Actor
-                                actor_name = actor_even.find('td', itemprop="actor").find('span').text
-                                actor_imdb_id = actor_even.find('td', itemprop="actor").find('a')['href'][6:15]
-                                actor_imdb_url = 'http://www.imdb.com' + actor_even.find('td', itemprop="actor").find('a')['href'][:16]
-
-                                actor_qs = Person.objects.get_or_create(name=actor_name,
-                                                                    imdb_id=actor_imdb_id,
-                                                                    imdb_url=actor_imdb_url,
-                                                                    )
+                                directors.append(director_qs[0])
 
                                 #Create/Grab PersonType
                                 person_type = []
-                                name = 'actor'
+                                name = 'director'
                                 person_type_qs = PersonType.objects.get_or_create(name=name)
                                 person_type.append(person_type_qs[0])
-                                actor_qs[0].type.add(*person_type)
+                                director_qs[0].type.add(*person_type)
 
-                                #Create Character
-                                try:
-                                    character_type =[]
-                                    character_name = actor_even.find('td', class_="character").find('a').text
-                                    character_imdb_id = actor_even.find('td', class_="character").find('a')['href'][11:20]
-                                    character_imdb_url = 'http://www.imdb.com' + actor_even.find('td', class_="character").find('a')['href'][:21]
-                                    character_qs = Character.objects.get_or_create(name=character_name,
-                                                                                imdb_id=character_imdb_id,
-                                                                                imdb_url=character_imdb_url,
-                                                                                )
-                                    character_type.append(character_qs[0])
-                                    #Connect to Actor
-                                    actor_type = []
-                                    actor_type.append(actor_qs[0])
-                                    character_qs[0].actor.add(*actor_type)
-                                    content_qs[0].characters.add(*character_type)
+                            #Connect Content to Director
+                            content_qs[0].director.add(*directors)
 
+                            #Grab Writer Data
+                            writers = []
+                            for writer in page_soup.find_all('div', itemprop="creator"):
+                                name = writer.find('a').text
+                                imdb_id = writer.find('a')['href'][6:15]
+                                imdb_url = 'http://www.imdb.com' + writer.find('a')['href'][:16]
+                                type = PersonType.objects.get_or_create(name="writer")
 
+                                writer_qs = Person.objects.get_or_create(name=name,
+                                                                        imdb_id=imdb_id,
+                                                                        imdb_url=imdb_url,
+                                                                        )
 
-                                except AttributeError:
-                                    pass
-                            else:
-                                pass
-                        for actor_odd in page_soup.find_all('tr', 'odd'):
-                            if actor_odd.find('td', itemprop="actor") != None:
-                                #Creator Actor
-                                actor_name = actor_odd.find('td', itemprop="actor").find('span').text
-                                actor_imdb_id = actor_odd.find('td', itemprop="actor").find('a')['href'][6:15]
-                                actor_imdb_url = 'http://www.imdb.com' + actor_odd.find('td', itemprop="actor").find('a')['href'][:16]
-
-                                actor_qs = Person.objects.get_or_create(name=actor_name,
-                                                                    imdb_id=actor_imdb_id,
-                                                                    imdb_url=actor_imdb_url,
-                                                                    )
+                                writers.append(writer_qs[0])
 
                                 #Create/Grab PersonType
                                 person_type = []
-                                name = 'actor'
+                                name = 'writer'
                                 person_type_qs = PersonType.objects.get_or_create(name=name)
                                 person_type.append(person_type_qs[0])
-                                actor_qs[0].type.add(*person_type)
+                                writer_qs[0].type.add(*person_type)
 
-                                #Create Character
-                                try:
-                                    character_type =[]
-                                    character_name = actor_odd.find('td', class_="character").find('a').text
-                                    character_imdb_id = actor_odd.find('td', class_="character").find('a')['href'][11:20]
-                                    character_imdb_url = 'http://www.imdb.com' + actor_odd.find('td', class_="character").find('a')['href'][:21]
-                                    character_qs = Character.objects.get_or_create(name=character_name,
-                                                                                imdb_id=character_imdb_id,
-                                                                                imdb_url=character_imdb_url,
-                                                                                )
+                            #Connect Content to Director
+                            content_qs[0].writer.add(*writers)
 
-                                    character_type.append(character_qs[0])
-                                    #Connect to Actor
-                                    actor_type = []
-                                    actor_type.append(actor_qs[0])
-                                    character_qs[0].actor.add(*actor_type)
-                                    content_qs[0].characters.add(*character_type)
+                            #Grab Actor/Character Data
+                            for actor_even in page_soup.find_all('tr', 'even'):
+                                if actor_even.find('td', itemprop="actor") != None:
+                                    #Create Actor
+                                    actor_name = actor_even.find('td', itemprop="actor").find('span').text
+                                    actor_imdb_id = actor_even.find('td', itemprop="actor").find('a')['href'][6:15]
+                                    actor_imdb_url = 'http://www.imdb.com' + actor_even.find('td', itemprop="actor").find('a')['href'][:16]
 
-                                except AttributeError:
+                                    actor_qs = Person.objects.get_or_create(name=actor_name,
+                                                                        imdb_id=actor_imdb_id,
+                                                                        imdb_url=actor_imdb_url,
+                                                                        )
+
+                                    #Create/Grab PersonType
+                                    person_type = []
+                                    name = 'actor'
+                                    person_type_qs = PersonType.objects.get_or_create(name=name)
+                                    person_type.append(person_type_qs[0])
+                                    actor_qs[0].type.add(*person_type)
+
+                                    #Create Character
+                                    try:
+                                        character_type =[]
+                                        character_name = actor_even.find('td', class_="character").find('a').text
+                                        character_imdb_id = actor_even.find('td', class_="character").find('a')['href'][11:20]
+                                        character_imdb_url = 'http://www.imdb.com' + actor_even.find('td', class_="character").find('a')['href'][:21]
+                                        character_qs = Character.objects.get_or_create(name=character_name,
+                                                                                    imdb_id=character_imdb_id,
+                                                                                    imdb_url=character_imdb_url,
+                                                                                    )
+                                        character_type.append(character_qs[0])
+                                        #Connect to Actor
+                                        actor_type = []
+                                        actor_type.append(actor_qs[0])
+                                        character_qs[0].actor.add(*actor_type)
+                                        content_qs[0].characters.add(*character_type)
+
+
+
+                                    except AttributeError:
+                                        pass
+                                else:
                                     pass
-                            else:
-                                pass
+                            for actor_odd in page_soup.find_all('tr', 'odd'):
+                                if actor_odd.find('td', itemprop="actor") != None:
+                                    #Creator Actor
+                                    actor_name = actor_odd.find('td', itemprop="actor").find('span').text
+                                    actor_imdb_id = actor_odd.find('td', itemprop="actor").find('a')['href'][6:15]
+                                    actor_imdb_url = 'http://www.imdb.com' + actor_odd.find('td', itemprop="actor").find('a')['href'][:16]
 
-                        # Grab Keyword Data
-                        keywords = []
-                        for keyword in keyword_soup.find_all('div', class_="sodatext"):
-                            keyword_qs = Keyword.objects.get_or_create(name=keyword.find('a').text)
-                            keywords.append(keyword_qs[0])
-                        #Connect Content to Genres
-                        content_qs[0].keywords.add(*keywords)
+                                    actor_qs = Person.objects.get_or_create(name=actor_name,
+                                                                        imdb_id=actor_imdb_id,
+                                                                        imdb_url=actor_imdb_url,
+                                                                        )
 
-                        print content_qs[0].title + ' = Done!'
-                        content_qs[0].save()
+                                    #Create/Grab PersonType
+                                    person_type = []
+                                    name = 'actor'
+                                    person_type_qs = PersonType.objects.get_or_create(name=name)
+                                    person_type.append(person_type_qs[0])
+                                    actor_qs[0].type.add(*person_type)
+
+                                    #Create Character
+                                    try:
+                                        character_type =[]
+                                        character_name = actor_odd.find('td', class_="character").find('a').text
+                                        character_imdb_id = actor_odd.find('td', class_="character").find('a')['href'][11:20]
+                                        character_imdb_url = 'http://www.imdb.com' + actor_odd.find('td', class_="character").find('a')['href'][:21]
+                                        character_qs = Character.objects.get_or_create(name=character_name,
+                                                                                    imdb_id=character_imdb_id,
+                                                                                    imdb_url=character_imdb_url,
+                                                                                    )
+
+                                        character_type.append(character_qs[0])
+                                        #Connect to Actor
+                                        actor_type = []
+                                        actor_type.append(actor_qs[0])
+                                        character_qs[0].actor.add(*actor_type)
+                                        content_qs[0].characters.add(*character_type)
+
+                                    except AttributeError:
+                                        pass
+                                else:
+                                    pass
+
+                            # Grab Keyword Data
+                            keywords = []
+                            for keyword in keyword_soup.find_all('div', class_="sodatext"):
+                                keyword_qs = Keyword.objects.get_or_create(name=keyword.find('a').text)
+                                keywords.append(keyword_qs[0])
+                            #Connect Content to Genres
+                            content_qs[0].keywords.add(*keywords)
+
+                            print content_qs[0].title + ' = Done!'
+                            content_qs[0].save()
+                        except:
+                            pass
 
                 except UnicodeEncodeError:
                     pass
