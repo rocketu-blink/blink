@@ -7,7 +7,7 @@ angular.module('blink')
         $scope.movies = [];
       }
       if (data.length === 3) {
-        var movies = $http.get("http://10.12.4.41:8000/results?search=" + $scope.inputData)
+        var movies = $http.get("http://10.12.4.41:8000/contents?search=" + $scope.inputData)
         movies.success(function (data) {
           $scope.all_data = data;
           $scope.movies = [];
@@ -42,7 +42,7 @@ angular.module('blink')
   .controller('SearchController', function ($scope, $routeParams, $http) {
     $scope.loaded = false;
     $scope.searchTerm = $routeParams['search'];
-    var searchResults = $http.get('http://10.12.4.41:8000/results?search=' + $scope.searchTerm.toString());
+    var searchResults = $http.get('http://10.12.4.41:8000/contents?search=' + $scope.searchTerm.toString());
     searchResults.success(function (data) {
       $scope.results = data;
       $scope.loaded = true;
