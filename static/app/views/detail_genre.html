@@ -1,0 +1,37 @@
+<div class="container-fluid">
+  <h1 class="text-center">{{genre}}</h1><br>
+  <div class="text-center">
+    <input ng-model="filterBy" placeholder="Search">
+    <p> </p>
+  </div>
+  <div class="row">
+    <img width="300px" class="img-responsive" ng-if="!loaded" src="assets/img/loading.gif"/>
+    <ul class="list-group col-sm-offset-4 col-sm-4">
+      <li dir-paginate="result in genreData | filter: filterBy | itemsPerPage: 10" class="list-group-item borderedList">
+        <div>
+          <img ng-hide="result.poster === null || result.poster === ''" height-"50px" src={{result.poster}}/>
+          <img ng-show="result.poster === null || result.poster === ''" height="60px" src="assets/img/not_available.jpg"/>  
+          <a href="#/movie/{{result.id}}"><span>{{result.title}}</span></a>
+          <span class="pull-right">{{result.release_year}}</span>
+          <div id="link-icons" class="col-sm-offset-5">
+            <a href={{result.netflix.netflix_url}}>
+              <img ng-if="!(result.netflix === null)" src="assets/img/netflix-icon.png"/>
+            </a>
+            <img ng-if="result.netflix === null" src="assets/img/grey-netflix-icon.png"/>
+            <a href={{result.hulu.hulu_url}}>
+              <img ng-if="!(result.hulu === null)" src="assets/img/hulu-icon.png"/>
+            </a>
+            <img ng-if="result.hulu === null" src="assets/img/grey-hulu-icon.png"/>
+            <a href={{result.amazon.prime_url}}>
+              <img ng-if="!(result.amazon === null)"  height="32px" width="32px" src="assets/img/amazon-icon.png"/>
+            </a>
+            <img ng-if="result.amazon === null" height="32px" width="32px" src="assets/img/grey-amazon-icon.png"/>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="controls" class="text-center">
+    <dir-pagination-controls align="center" boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="app/views/dirPagination.tpl.html"></dir-pagination-controls>
+  </div>
+</div> 
