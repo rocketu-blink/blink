@@ -7,12 +7,14 @@ angular.module('blink')
         $scope.movies = [];
       }
       if (data.length === 3) {
-        var movies = $http.get("http://10.12.4.41:8000/results?search=" + $scope.inputData)
+        var movies = $http.get("http://10.12.4.41:8000/contents?search=" + $scope.inputData)
         movies.success(function (data) {
           $scope.all_data = data;
           $scope.movies = [];
           for (var i = 0; i < data.length; i++) {
-            $scope.movies.push(data[i]['title']+ ' ('+data[i]['release_year'].toString()+')');
+            if (data[i]['release_year']) {
+              $scope.movies.push(data[i]['title']+ ' ('+data[i]['release_year']+')');
+            }
           }
         });
       };
@@ -38,10 +40,12 @@ angular.module('blink')
   
 
   .controller('SearchController', function ($scope, $routeParams, $http) {
+    $scope.loaded = false;
     $scope.searchTerm = $routeParams['search'];
-    var searchResults = $http.get('http://10.12.4.41:8000/results?search=' + $scope.searchTerm.toString());
+    var searchResults = $http.get('http://10.12.4.41:8000/contents?search=' + $scope.searchTerm.toString());
     searchResults.success(function (data) {
       $scope.results = data;
+      $scope.loaded = true;
     })
   })
 
@@ -63,27 +67,35 @@ angular.module('blink')
     
   })
 
+  .controller('GenreController', function ($scope, $http) {
+    $scope.genre = ['Crime', 'Drama', 'Comedy', 'Romance', 'Thriller', 'Animation', 'Adventure', 'War', 
+    'Horror', 'Action', 'Sci-Fi', 'Family', 'Fantasy', 'Biography', 'Music', 'Mystery', 'Sport', 'History', 
+    'Western', 'Musical', 'Adult', 'Film-Noir', 'News'];
+  })
+
   .controller('GenreDetailController', function ($scope, $routeParams, $http) {
     $scope.genre = $routeParams['genre_id'];
-    var genreInfo = $http.get('test_json/test_genre.json');
-    genreInfo.success(function (data) {
-      $scope.genreInfo = data;
-    })
-    var genreDetail = $http.get('test_json/genre_movie_detail_test.json');
+    $scope.loaded = false;
+    var genreDetail = $http.get('http://10.12.4.41:8000/genre?search=' + $scope.genre);
     genreDetail.success(function (data) {
+      $scope.loaded = true;
       $scope.genreData = data;
     })
   })
 
   .controller('YearController', function ($scope, $http) {
-    
+    $scope.yearData = [];
+    for (var i = 1900; i < 2016; i++) {
+      $scope.yearData.push(i)
+    }
   })
 
   .controller('YearDetailController', function ($scope, $http, $routeParams){
     $scope.year = $routeParams['year_id'];
-    var yearDetail = $http.get('test_json/genre_movie_detail_test.json');
+    $scope.loaded = false;
+    var yearDetail = $http.get('http://10.12.4.41:8000/year?search=' + $scope.year);
     yearDetail.success(function (data) {
+      $scope.loaded = true;
       $scope.yearData = data;
     })
   })
-
